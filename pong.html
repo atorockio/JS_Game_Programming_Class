@@ -32,7 +32,7 @@ It's not strictly necessary in most cases, but it does keep IE from pooping the 
     so we force everyone to have the same amount. */
         body
         {
-            background-color: #00FF00;
+            background-color: #8FE782;
             margin: 0;
             padding: 0;
         }
@@ -45,7 +45,7 @@ It's not strictly necessary in most cases, but it does keep IE from pooping the 
             position: absolute;
             margin: 0;
             padding: 0;
-            background-color: #00ff00;
+            background-color: #8FE782;
         }
         
         /* There are two different score indicators, so the 
@@ -54,7 +54,7 @@ It's not strictly necessary in most cases, but it does keep IE from pooping the 
         .score
         {
             top: 3%;
-            color: #00ff00;
+            color: #8FE782;
             background-color: transparent;
             font-family: fixedsys, Courier, "Courier New" , fixed;
             font-weight: bold;
@@ -87,7 +87,7 @@ It's not strictly necessary in most cases, but it does keep IE from pooping the 
             /*border-top: solid 10px #00ff00;
             border-bottom: solid 10px #00ff00;*/
             /*using the body background set to #0f0 for the borders so that they can be set as a percentage*/
-            background-color: #000000;
+            background-color: #333333;
         }
         
         /* This is just a visual reference. It doesn't actually 
@@ -95,7 +95,7 @@ It's not strictly necessary in most cases, but it does keep IE from pooping the 
         #divider
         {
             top: 0px;
-            left: 49%;
+            left: 49.65%;
             width: .7%;
             height: 100%;
         }
@@ -108,8 +108,8 @@ It's not strictly necessary in most cases, but it does keep IE from pooping the 
         {
             position: absolute;
             top: 20%;
-            left: 42.5%;
-            width: 15%;
+            left: 45%;
+            width: 10%;
             height: 5%;
         }
         
@@ -136,25 +136,9 @@ but it is more convenient today to keep them in one. -->
         to itself. */
                 
         /*
-         * find the window width
-         * this method is from http://www.javascripter.net/faq/browserw.htm
-         * it was found doing a quick google search for 'javascript get window size'
+         * A function to find the viewport size
+         * From: http://stackoverflow.com/questions/1766861/find-the-exact-height-and-width-of-the-viewport-in-a-cross-browser-way-no-proto
          */
-        /*if (document.body && document.body.offsetWidth) {
-         windowWidth = document.body.offsetWidth;
-         windowHeight = document.body.offsetHeight;
-        }
-        if (document.compatMode=='CSS1Compat' &&
-            document.documentElement &&
-            document.documentElement.offsetWidth ) {
-         windowWidth = document.documentElement.offsetWidth;
-         windowHeight = document.documentElement.offsetHeight;
-        }
-        if (window.innerWidth && window.innerHeight) {
-         windowWidth = window.innerWidth;
-         windowHeight = window.innerHeight;
-        }*/
-        /*The above was not working quite right in Chrome*/
         function getViewport() {
 
          var viewPortWidth;
@@ -253,7 +237,7 @@ but it is more convenient today to keep them in one. -->
             this.height = height;
             this.score = 0;
             this.scoreDisplay = scoreDisplay;
-            this.elem = makeRect(this.x, this.y, this.width, this.height, "#00ff00");
+            this.elem = makeRect(this.x, this.y, this.width, this.height, "#8FE782");
             document.getElementById("board").appendChild(this.elem);
         }
 
