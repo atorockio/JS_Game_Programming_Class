@@ -58,19 +58,21 @@ It's not strictly necessary in most cases, but it does keep IE from pooping the 
             background-color: transparent;
             font-family: fixedsys, Courier, "Courier New" , fixed;
             font-weight: bold;
-            font-size: 36pt;
+            font-size: 3em;
+            width:5em;
+            text-align:center;
         }
         
         /* and then the individual score counters are positioned
    seperately */
         #score1
         {
-            left: 40%;
+            left: 35%;
         }
         
         #score2
         {
-            left: 57%;
+            right: 35%;
         }
         
         /* This is kind of the "background" of the game, as well
@@ -119,11 +121,11 @@ It's not strictly necessary in most cases, but it does keep IE from pooping the 
         #status
         {
             top: 20%;
-            left: 9%;
+            left: 10%;
             width: 80%;
-            padding: 1%;
+            padding: 1% 0;
             text-align: center;
-            background-color: black;
+            background-color: #333;
             display: none;
         }
     </style>
@@ -180,7 +182,7 @@ but it is more convenient today to keep them in one. -->
         /* This is a convenience function to cover a fairly common task.
         Basically, this is just creating the same <DIV> tag that are
         declared below in the HTML, but doing it through JavaScript. */
-        function makeRect(x, y, width, height, bgcolor)
+        function makeRect(x, y, width, height, bgcolor, bradius)
         {
             /* This is a function provided by the browser to create HTML elements on-the-fly.
             The element is not automatically added to the page. */
@@ -196,6 +198,7 @@ but it is more convenient today to keep them in one. -->
             s.left = x + "px";
             s.width = width + "px";
             s.height = height + "px";
+            s.borderRadius = bradius + "px";
 
             /* This makeRect() function does not do anything to the page itself,
             it merely creates the rectangle and gives it back to whomever
@@ -237,7 +240,7 @@ but it is more convenient today to keep them in one. -->
             this.height = height;
             this.score = 0;
             this.scoreDisplay = scoreDisplay;
-            this.elem = makeRect(this.x, this.y, this.width, this.height, "#8FE782");
+            this.elem = makeRect(this.x, this.y, this.width, this.height, "#8FE782", this.width/2);
             document.getElementById("board").appendChild(this.elem);
         }
 
@@ -351,7 +354,7 @@ but it is more convenient today to keep them in one. -->
             this.dy = 0;
             this.width = width;
             this.height = height;
-            this.elem = makeRect(this.x, this.y, this.width, this.height, "#00ff00");
+            this.elem = makeRect(this.x, this.y, this.width, this.height, "#FFFFFF", this.width/2);
             document.getElementById("board").appendChild(this.elem);
         }
 
@@ -591,6 +594,7 @@ but it is more convenient today to keep them in one. -->
                 clearInterval(timer);
                 statusBox.style.display = "none";
                 startButton.style.display = "block";
+                document.body.style.cursor = "auto";
                 p1.reset();
                 p2.reset();
                 state = titleScreen;
@@ -619,6 +623,7 @@ but it is more convenient today to keep them in one. -->
         {
             startButton.style.display = "none";
             statusBox.style.display = "block";
+            document.body.style.cursor = "auto";
             lastFrame = new Date().getTime();
             ball.drop(1, 0);
             state = prePlay;
