@@ -135,43 +135,35 @@ but it is more convenient today to keep them in one. -->
         define "classes", you define a function that saves attributes
         to itself. */
         
-        function getDimensions() {
-          /* not sure what a good fallback would be */
-          var play_width = 630, play_height = 460;
-          if (document.body && document.body.offsetWidth) {
-           play_width = document.body.offsetWidth;
-           play_height = document.body.offsetHeight;
-          }
-          if (document.compatMode=='CSS1Compat' &&
-              document.documentElement &&
-              document.documentElement.offsetWidth ) {
-           play_width = document.documentElement.offsetWidth;
-           play_height = document.documentElement.offsetHeight;
-          }
-          if (window.innerWidth && window.innerHeight) {
-           play_width = window.innerWidth;
-           play_height = window.innerHeight;
-          }
-          var play_height = .98 * play_height;
-          var line_width = .01 * play_height;
-          var paddle_height = .1 * play_height;
-          
-          var dimensions = new Array();
-          dimensions["play_width"] = Math.round(play_width);
-          dimensions["play_height"] = Math.round(play_height);
-          dimensions["line_width"] = Math.round(line_width);
-          dimensions["paddle_height"] = Math.round(paddle_height);
-          
-          return dimensions;
+        /* not sure what a good fallback would be */
+        var play_width = 400, play_height = 800;
+                
+        /*
+         * find the window width
+         * this method is from http://www.javascripter.net/faq/browserw.htm
+         * it was found doing a quick google search for 'javascript get window size'
+         */
+        if (document.body && document.body.offsetWidth) {
+         windowWidth = document.body.offsetWidth;
+         windowHeight = document.body.offsetHeight;
         }
-
+        if (document.compatMode=='CSS1Compat' &&
+            document.documentElement &&
+            document.documentElement.offsetWidth ) {
+         windowWidth = document.documentElement.offsetWidth;
+         windowHeight = document.documentElement.offsetHeight;
+        }
+        if (window.innerWidth && window.innerHeight) {
+         windowWidth = window.innerWidth;
+         windowHeight = window.innerHeight;
+        }
+        
         /* by making these specific values variables, we can make the game
         more customizable. */
-        var dimensions = getDimensions();
-        var PLAY_WIDTH = dimensions["play_width"];
-        var PLAY_HEIGHT = dimensions["play_height"];
-        var LINE_WIDTH = dimensions["line_width"];
-        var PADDLE_LENGTH = dimensions["paddle_height"];
+        var PLAY_WIDTH = windowWidth;
+        var PLAY_HEIGHT = .98 * windowHeight;
+        var LINE_WIDTH = .01 * play_height;
+        var PADDLE_LENGTH = .1 * play_height;   
 
         /* This is a convenience function to cover a fairly common task.
         Basically, this is just creating the same <DIV> tag that are
