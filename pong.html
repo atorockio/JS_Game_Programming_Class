@@ -134,16 +134,13 @@ but it is more convenient today to keep them in one. -->
         /* JavaScript is an functional and object oriented language. To
         define "classes", you define a function that saves attributes
         to itself. */
-        
-        /* not sure what a good fallback would be */
-        var play_width = 400, play_height = 800;
                 
         /*
          * find the window width
          * this method is from http://www.javascripter.net/faq/browserw.htm
          * it was found doing a quick google search for 'javascript get window size'
          */
-        if (document.body && document.body.offsetWidth) {
+        /*if (document.body && document.body.offsetWidth) {
          windowWidth = document.body.offsetWidth;
          windowHeight = document.body.offsetHeight;
         }
@@ -156,14 +153,45 @@ but it is more convenient today to keep them in one. -->
         if (window.innerWidth && window.innerHeight) {
          windowWidth = window.innerWidth;
          windowHeight = window.innerHeight;
+        }*/
+        /*The above was not working quite right in Chrome*/
+        function getViewport() {
+
+         var viewPortWidth;
+         var viewPortHeight;
+
+         // the more standards compliant browsers (mozilla/netscape/opera/IE7) use window.innerWidth and window.innerHeight
+         if (typeof window.innerWidth != 'undefined') {
+           viewPortWidth = window.innerWidth,
+           viewPortHeight = window.innerHeight
+         }
+
+        // IE6 in standards compliant mode (i.e. with a valid doctype as the first line in the document)
+         else if (typeof document.documentElement != 'undefined'
+         && typeof document.documentElement.clientWidth !=
+         'undefined' && document.documentElement.clientWidth != 0) {
+            viewPortWidth = document.documentElement.clientWidth,
+            viewPortHeight = document.documentElement.clientHeight
+         }
+
+         // older versions of IE
+         else {
+           viewPortWidth = document.getElementsByTagName('body')[0].clientWidth,
+           viewPortHeight = document.getElementsByTagName('body')[0].clientHeight
+         }
+         return [viewPortWidth, viewPortHeight];
         }
+        
+        viewPort = getViewport();
+        windowWidth = viewPort[0];
+        windowHeight = viewPort[1];
         
         /* by making these specific values variables, we can make the game
         more customizable. */
         var PLAY_WIDTH = windowWidth;
         var PLAY_HEIGHT = .98 * windowHeight;
-        var LINE_WIDTH = .01 * play_height;
-        var PADDLE_LENGTH = .1 * play_height;   
+        var LINE_WIDTH = .01 * windowWidth;
+        var PADDLE_LENGTH = .1 * windowWidth;   
 
         /* This is a convenience function to cover a fairly common task.
         Basically, this is just creating the same <DIV> tag that are
