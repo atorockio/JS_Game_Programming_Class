@@ -59,7 +59,7 @@ It's not strictly necessary in most cases, but it does keep IE from pooping the 
             font-family: fixedsys, Courier, "Courier New" , fixed;
             font-weight: bold;
             font-size: 3em;
-            width:5em;
+            width:1em;
             text-align:center;
         }
         
@@ -106,13 +106,22 @@ It's not strictly necessary in most cases, but it does keep IE from pooping the 
    done. This is all that suffices for a "title" screen in the
    game. It gives the user a chance to acclimate to the layout
    and start on their own time. */
-        button#start
+        button.start
         {
             position: absolute;
             top: 20%;
-            left: 45%;
-            width: 10%;
-            height: 5%;
+            width: 10em;
+            height: 5em;
+        }
+        
+        button#start-left
+        {
+          left:30%;
+        }
+        
+        button#start-right
+        {
+          right:30%;
         }
         
         /* Never forget that you need to give quite a bit of feedback
@@ -177,7 +186,16 @@ but it is more convenient today to keep them in one. -->
         var PLAY_WIDTH = windowWidth;
         var PLAY_HEIGHT = .98 * windowHeight;
         var LINE_WIDTH = .01 * windowWidth;
-        var PADDLE_LENGTH = .1 * windowWidth;   
+        var PADDLE_LENGTH = .1 * windowWidth;
+        var ON_RIGHT = null;//whether or not the human player is on the right side of the board
+        
+        /* Let's find a multiplier (based on the screen size) to make the game's 
+        difficulty more consistent accross window sizes, different ball and AI 
+        speed based on the board size*/
+        var origWH = 800*400; //from the original game board size
+        var newWH = PLAY_WIDTH*PLAY_HEIGHT; //new game sborad size based on this responsive version
+        var SCALE_FACTOR = Math.sqrt(newWH/origWH);
+        console.log(SCALE_FACTOR)
 
         /* This is a convenience function to cover a fairly common task.
         Basically, this is just creating the same <DIV> tag that are
@@ -284,22 +302,22 @@ but it is more convenient today to keep them in one. -->
         /* The AI() method is the Artificial Intelligience for paddles. This implementation
         is pretty stupid and easy to beat, but offers a fairly reasonable behavior that is
         nice to play against for such a simple game. */
-        Player.prototype.AI = function (ball)
+        Player.prototype.AI = function (ball, onRight)
         {
             /* the AI player is only going to play when the ball is moving towards it.
             This means that the AI is specifically only coded for the paddle on the right
             side of the play area */
-            if (ball.dx > 0)
+            if ((ON_RIGHT && ball.dx < 0) || (!ON_RIGHT && ball.dx > 0))
             {
                 if (ball.y > this.y + this.height - LINE_WIDTH)
                 {
                     // the ball has moved past the bottom of the paddle
-                    this.moveTo(this.y + 1);
+                    this.moveTo(this.y + 1*SCALE_FACTOR);
                 }
                 else if (ball.y < this.y)
                 {
                     // the ball has moved past the top of the paddle
-                    this.moveTo(this.y - 1);
+                    this.moveTo(this.y - 1*SCALE_FACTOR);
                 }
             }
         };
@@ -377,7 +395,7 @@ but it is more convenient today to keep them in one. -->
             per millisecond) as well as a maximum speed (0.2 + 0.3 = 0.5 pixels per 
             millisecond). The speed is based on the current combined score of the 
             two players, and as the game is to 5, the highest score before a game-over 
-            is 4 to 4, so the highest speed is 8. */
+            is 4 to 4, so the highest speed is 8.*/
             var vel = 0.2 + 0.3 * speed / 8;
 
             /* Using a random number generator, picks an angle at which to launch the
@@ -422,11 +440,12 @@ but it is more convenient today to keep them in one. -->
 
         /* These variables are used to keep track of things that we
         need to play the game. */
-        var p1, p2, ball, timer, lastFrame, startButton, statusBox, state;
+        var p1, p2, ball, timer, lastFrame, startButtonLeft, startButtonRight, statusBox, state;
         window.onload = function ()
         {
             // need to be able to show/hide the start button
-            startButton = document.getElementById("start");
+            startButtonLeft = document.getElementById("start-left");
+            startButtonRight = document.getElementById("start-right");
             // need to be able to show/hide the status display
             statusBox = document.getElementById("status");
 
@@ -454,9 +473,13 @@ but it is more convenient today to keep them in one. -->
         /* This is an "event". It occurs when something happens. In this case, when the
         user moves their mouse. We use it to move the user's paddle. */
         
-	    function movePlayer1(y)
+	    function moveHumanPlayer(y)
 	    {
+	      if (!ON_RIGHT) {
 	        p1.moveTo(y - PADDLE_LENGTH / 2);
+        } else {
+          p2.moveTo(y - PADDLE_LENGTH / 2);
+        }
 	    }
 
 		if(navigator.userAgent.indexOf("iPad") != -1
@@ -469,7 +492,7 @@ but it is more convenient today to keep them in one. -->
 		    {
 		        if (evt.touches.length > 0)
 		        {
-		            movePlayer1(evt.touches[0].pageY);
+		            moveHumanPlayer(evt.touches[0].pageY);
 		        }
 		        evt.preventDefault();
 		    }); 
@@ -479,7 +502,7 @@ but it is more convenient today to keep them in one. -->
 		    console.log("Is Desktop OS");
 		    document.addEventListener("mousemove", function (evt)
             {
-	            movePlayer1(evt.clientY);
+	            moveHumanPlayer(evt.clientY);
 	        });
 		}
         
@@ -548,7 +571,7 @@ but it is more convenient today to keep them in one. -->
                         // increase their score
                         scoringPlayer.scored();
                         //redrop the ball
-                        ball.drop(scoringPlayer == p1 ? 1 : -1, p1.score + p2.score);
+                        ball.drop(scoringPlayer == p1 ? 1 : -1, p1.score + p2.score * SCALE_FACTOR);
                         //show the status box for the next game state 
                         statusBox.style.display = "block";
                         if (scoringPlayer.score < 5)
@@ -571,10 +594,16 @@ but it is more convenient today to keep them in one. -->
                 then we'll run the P2 AI based on the ball's new location */
                 for (var i = 0; i < delta; i += AI_STEP)
                 {
+                  if (!ON_RIGHT) {
                     p2.AI(ball);
+                  }
+                  else {
+                    p1.AI(ball);
+                  }
                 }
                 ball.display();
             }
+            
 
             return true;
         }
@@ -593,7 +622,8 @@ but it is more convenient today to keep them in one. -->
             {
                 clearInterval(timer);
                 statusBox.style.display = "none";
-                startButton.style.display = "block";
+                startButtonLeft.style.display = "block";
+                startButtonRight.style.display = "block";
                 document.body.style.cursor = "auto";
                 p1.reset();
                 p2.reset();
@@ -619,11 +649,13 @@ but it is more convenient today to keep them in one. -->
 
         /* this function is called when the start button is clicked. It initializes the game
         and starts the timer working. */
-        function start()
+        function start(onRight)
         {
-            startButton.style.display = "none";
+            ON_RIGHT = onRight;
+            startButtonLeft.style.display = "none";
+            startButtonRight.style.display = "none";
             statusBox.style.display = "block";
-            document.body.style.cursor = "auto";
+            document.body.style.cursor = "none";
             lastFrame = new Date().getTime();
             ball.drop(1, 0);
             state = prePlay;
@@ -637,7 +669,8 @@ but it is more convenient today to keep them in one. -->
         <div id="score1" class="score">0</div>
         <div id="score2" class="score">0</div>
         <div id="status" class="score">Ready</div>
-        <button onclick="start()" id="start">Start</button>
+        <button class="start" onclick="start(false)" id="start-left">Play on the Left</button>
+        <button class="start" onclick="start(true)" id="start-right">Play on the Right</button>
     </div>
 </body>
 </html>
