@@ -195,6 +195,7 @@ but it is more convenient today to keep them in one. -->
         var LINE_WIDTH = .01 * windowWidth;
         var PADDLE_LENGTH = .1 * windowWidth;
         var ON_RIGHT = null;//whether or not the human player is on the right side of the board
+        var HUMAN_WINS = false;
         
         /* Let's find a multiplier (based on the screen size) to make the game's 
         difficulty more consistent accross window sizes, different ball and AI 
@@ -585,11 +586,17 @@ but it is more convenient today to keep them in one. -->
                         {
                             /* we're still playing if the person who just scored hasn't hit
                             the max score. */
-                            state = prePlay; 
+                            state = prePlay;
+                            console.log(scoringPlayer == p1);
                         }
                         else
                         {
                             state = gameOver;
+                            if ((ON_RIGHT && scoringPlayer == p2) || (!ON_RIGHT && scoringPlayer == p1)) {
+                              HUMAN_WINS = true;
+                            } else {
+                              HUMAN_WINS = false;
+                            }
                         }
                     }
                 }
@@ -623,7 +630,11 @@ but it is more convenient today to keep them in one. -->
         {
             if (delta < 3000)
             {
-                statusBox.innerHTML = "Game Over";
+              if (HUMAN_WINS) {
+                statusBox.innerHTML = "You Won!";
+              } else {
+                statusBox.innerHTML = "Game Over...You Loose";
+              }
             }
             else
             {
