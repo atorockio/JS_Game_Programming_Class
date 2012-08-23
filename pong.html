@@ -111,17 +111,24 @@ It's not strictly necessary in most cases, but it does keep IE from pooping the 
             position: absolute;
             top: 20%;
             width: 10em;
-            height: 5em;
+            height: 3em;
+            font-family: fixedsys, Courier, "Courier New" , fixed;
+            font-size:1em;
+            color: #8FE782;
+            background: #222;
+            border:3px #8FE782 solid;
+            border-radius: 10px;
+            cursor: pointer;
         }
         
         button#start-left
         {
-          left:30%;
+          left:20%;
         }
         
         button#start-right
         {
-          right:30%;
+          right:20%;
         }
         
         /* Never forget that you need to give quite a bit of feedback
@@ -305,8 +312,8 @@ but it is more convenient today to keep them in one. -->
         Player.prototype.AI = function (ball, onRight)
         {
             /* the AI player is only going to play when the ball is moving towards it.
-            This means that the AI is specifically only coded for the paddle on the right
-            side of the play area */
+            In order to make it so the computer player can be on the right or the left,
+            check to see which side the computer player is on and which way the ball is moving */
             if ((ON_RIGHT && ball.dx < 0) || (!ON_RIGHT && ball.dx > 0))
             {
                 if (ball.y > this.y + this.height - LINE_WIDTH)
@@ -455,7 +462,7 @@ but it is more convenient today to keep them in one. -->
             // making the paddles for each of the players
             p1 = new Player(
                 document.getElementById("score1"), // this player's score box
-                LINE_WIDTH,                        // the location of the paddle is spaced enough to give a full ball-width behind it
+                6*LINE_WIDTH,                        // the location of the paddle is spaced enough to give a full ball-width behind it, adding more space so if playing on touch screen, finger is not on top of paddle
                 (PLAY_HEIGHT - PADDLE_LENGTH) / 2, // vertically center the paddle on the play area
                 LINE_WIDTH,                        // the paddle's width is the same size as all of the other lines
                 PADDLE_LENGTH);                    // standardized height
@@ -463,7 +470,7 @@ but it is more convenient today to keep them in one. -->
             // exactly the same as the other paddle, except on the opposite side of the screen.
             p2 = new Player(
                 document.getElementById("score2"),
-                PLAY_WIDTH - LINE_WIDTH * 2,        // the left edge of the paddle is a ball's width and a paddle's width away from the right edge of the board
+                PLAY_WIDTH - LINE_WIDTH * 8,        // the left edge of the paddle is a ball's width and a paddle's width away from the right edge of the board
                 (PLAY_HEIGHT - PADDLE_LENGTH) / 2,
                 LINE_WIDTH,
                 PADDLE_LENGTH);
@@ -669,8 +676,8 @@ but it is more convenient today to keep them in one. -->
         <div id="score1" class="score">0</div>
         <div id="score2" class="score">0</div>
         <div id="status" class="score">Ready</div>
-        <button class="start" onclick="start(false)" id="start-left">Play on the Left</button>
-        <button class="start" onclick="start(true)" id="start-right">Play on the Right</button>
+        <button class="start" onclick="start(onRight = false)" id="start-left">Play on the Left</button>
+        <button class="start" onclick="start(onRight = true)" id="start-right">Play on the Right</button>
     </div>
 </body>
 </html>
